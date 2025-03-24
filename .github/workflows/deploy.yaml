@@ -1,0 +1,35 @@
+name: Deployment preprod
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repo from git
+        uses: actions/checkout@v2
+
+      - name: get credentials
+        run: |
+          aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin 661517513609.dkr.ecr.eu-west-3.amazonaws.com
+
+      - name: building project
+        run: |
+          npm i --force
+          npm run build
+
+      - name: building docker images
+        run: docker build -t 661517513609.dkr.ecr.eu-west-3.amazonaws.com/poc-stim-boulanger-ecr -f docker/Dockerfile .
+
+      - name: pushing
+        run: docker push 661517513609.dkr.ecr.eu-west-3.amazonaws.com/poc-stim-boulanger-ecr
+
+      - name: restarting services
+        run: |
+          aws configure set aws_access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          aws ecs update-service --region eu-west-3 --cluster poc-stim-boulanger-cluster --service poc-stim-boulanger-srv --force-new-deployment
+
