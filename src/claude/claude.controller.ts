@@ -15,7 +15,7 @@ import { ClaudeService } from './claude.service';
 export class ClaudeController {
   constructor(private ClaudeService: ClaudeService) {}
 
-  @Post()
+  @Post('upload')
   @UseInterceptors(FileInterceptor('photo'))
   async upload(@Body() body: any, @UploadedFile() file: File) {
     if (!file) {
@@ -28,7 +28,6 @@ export class ClaudeController {
       file.mimetype,
       sessionId,
     );
-    // console.log('recognizedProduct: ', recognizedProduct);
     return {
       success: true,
       data: recognizedProduct,
