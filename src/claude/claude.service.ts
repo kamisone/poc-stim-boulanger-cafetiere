@@ -1,5 +1,6 @@
 import AnthropicBedrock from '@anthropic-ai/bedrock-sdk';
 import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+const sharp = require('sharp');
 
 export type ImageMimeType =
   | 'image/jpeg'
@@ -76,11 +77,12 @@ export class ClaudeService {
     sessionId: string,
   ) {
     try {
+      const compressedImgBuffer = await this.compressImage(imgBuffer);
       this.history = { [sessionId]: BASIS_MESSAGES };
       const result = await this.command(
         sessionId,
         'image',
-        imgBuffer,
+        compressedImgBuffer,
         mimeType,
       );
       console.log(result.content[0]['text']);
@@ -164,6 +166,20 @@ export class ClaudeService {
         'Type must be text or image',
         HttpStatus.BAD_REQUEST,
       );
+    }
+  }
+
+  async compressImage(imageBuffer: Buffer): Promise<Buffer> {
+    try {
+      const compressedImage = await sharp(imageBuffer)
+        .resize({ width: 1024 }) // Resize the image to a max width of 1024px (optional)
+        .jpeg({ quality: 80 }) // You can also adjust the quality to further reduce size
+        .toBuffer();
+
+      return compressedImage;
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      throw new BadRequestException('Error compressing image.');
     }
   }
 }
