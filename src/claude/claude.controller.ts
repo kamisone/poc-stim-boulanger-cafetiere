@@ -49,7 +49,7 @@ export class ClaudeController {
 
     return {
       success: true,
-      data: assistantRes,
+      data: JSON.parse(assistantRes.content[0]['text']),
     };
   }
 }
