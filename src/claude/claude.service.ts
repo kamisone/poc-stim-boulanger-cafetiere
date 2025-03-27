@@ -235,7 +235,7 @@ export class ClaudeService {
     try {
       const prompt = `Here are the symptoms that the user confirmed: 
         ${symptoms.join(', ')} .
-        Now, provide the final result in this JSON format, without any other details: {"result": ""}.`;
+        Now, provide the final result in french in this JSON format, without any other details: {"cause": "", tutorial: "youtube tutorial url"}.`;
       const message: MessageType = {
         role: 'user',
         content: [
