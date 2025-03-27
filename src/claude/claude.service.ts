@@ -141,7 +141,8 @@ export class ClaudeService {
       console.log('error in recognizeProduct: ', err);
       return {
         success: false,
-        error: String(err),
+        error:
+          'The provided photo could not be recognized. Please ensure the image is clear and meets the necessary format requirements.',
       };
     }
   }
