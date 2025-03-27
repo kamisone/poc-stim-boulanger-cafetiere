@@ -48,7 +48,7 @@ export class ClaudeController {
 
     return {
       success: true,
-      data: JSON.parse(assistantRes.content[0]['text']),
+      data: assistantRes,
     };
   }
 
@@ -62,7 +62,7 @@ export class ClaudeController {
 
     return {
       success: true,
-      data: JSON.parse(assistantRes.content[0]['text']),
+      data: assistantRes,
     };
   }
 
@@ -76,7 +76,7 @@ export class ClaudeController {
 
     return {
       success: true,
-      data: JSON.parse(assistantRes.content[0]['text']),
+      data: assistantRes,
     };
   }
 }

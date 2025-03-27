@@ -176,6 +176,7 @@ export class ClaudeService {
         content: assistantRes.content,
       } as MessageType);
 
+
       return JSON.parse(assistantRes.content[0]['text']);
     } catch (err) {
       console.log('error in basicVerification: ', err);
