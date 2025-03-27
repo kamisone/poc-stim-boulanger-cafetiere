@@ -151,31 +151,39 @@ export class ClaudeService {
     if (!this.history || !this.history[sessionId]) {
       throw new BadRequestException('sessionId value not found.');
     }
-    const prompt = `Now that you’ve recognized the product the user reported as not working, give me five basic verifications to check, in this JSON format (only this format, no other details): {"verifications": []}.`;
-    const message: MessageType = {
-      role: 'user',
-      content: [
-        {
-          type: 'text',
-          text: prompt as string,
-        },
-      ],
-    };
+    try {
+      const prompt = `Now that you’ve recognized the product the user reported as not working, give me five basic verifications to check, in this JSON format (only this format, no other details): {"verifications": []}.`;
+      const message: MessageType = {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: prompt as string,
+          },
+        ],
+      };
 
-    this.history[sessionId].push(message);
+      this.history[sessionId].push(message);
 
-    const assistantRes = await this.client.messages.create({
-      model: 'anthropic.claude-3-haiku-20240307-v1:0',
-      max_tokens: MAX_TOKENS,
+      const assistantRes = await this.client.messages.create({
+        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        max_tokens: MAX_TOKENS,
 
-      messages: [...(this.history[sessionId] as any)],
-    });
-    this.history[sessionId].push({
-      role: assistantRes.role,
-      content: assistantRes.content,
-    } as MessageType);
+        messages: [...(this.history[sessionId] as any)],
+      });
+      this.history[sessionId].push({
+        role: assistantRes.role,
+        content: assistantRes.content,
+      } as MessageType);
 
-    return JSON.parse(assistantRes.content[0]['text']);
+      return JSON.parse(assistantRes.content[0]['text']);
+    } catch (err) {
+      console.log('error in basicVerification: ', err);
+      return {
+        success: false,
+        error: String(err),
+      };
+    }
   }
 
   async symptoms(sessionId: string) {
@@ -183,31 +191,39 @@ export class ClaudeService {
       throw new BadRequestException('sessionId value not found.');
     }
 
-    const prompt = `The user has completed all your basic verifications. Now, provide 5 symptoms they will confirm, in this JSON format (only this format, no other details): {"symptoms": []}.`;
-    const message: MessageType = {
-      role: 'user',
-      content: [
-        {
-          type: 'text',
-          text: prompt as string,
-        },
-      ],
-    };
+    try {
+      const prompt = `The user has completed all your basic verifications. Now, provide 5 symptoms they will confirm, in this JSON format (only this format, no other details): {"symptoms": []}.`;
+      const message: MessageType = {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: prompt as string,
+          },
+        ],
+      };
 
-    this.history[sessionId].push(message);
+      this.history[sessionId].push(message);
 
-    const assistantRes = await this.client.messages.create({
-      model: 'anthropic.claude-3-haiku-20240307-v1:0',
-      max_tokens: MAX_TOKENS,
+      const assistantRes = await this.client.messages.create({
+        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        max_tokens: MAX_TOKENS,
 
-      messages: [...(this.history[sessionId] as any)],
-    });
-    this.history[sessionId].push({
-      role: assistantRes.role,
-      content: assistantRes.content,
-    } as MessageType);
+        messages: [...(this.history[sessionId] as any)],
+      });
+      this.history[sessionId].push({
+        role: assistantRes.role,
+        content: assistantRes.content,
+      } as MessageType);
 
-    return JSON.parse(assistantRes.content[0]['text']);
+      return JSON.parse(assistantRes.content[0]['text']);
+    } catch (err) {
+      console.log('error in symptoms: ', err);
+      return {
+        success: false,
+        error: String(err),
+      };
+    }
   }
 
   async result(sessionId: string, symptoms: string[]) {
@@ -215,33 +231,41 @@ export class ClaudeService {
       throw new BadRequestException('sessionId value not found.');
     }
 
-    const prompt = `Here are the symptoms that the user confirmed: 
+    try {
+      const prompt = `Here are the symptoms that the user confirmed: 
         ${symptoms.join(', ')} .
         Now, provide the final result in this JSON format, without any other details: {"result": ""}.`;
-    const message: MessageType = {
-      role: 'user',
-      content: [
-        {
-          type: 'text',
-          text: prompt as string,
-        },
-      ],
-    };
+      const message: MessageType = {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: prompt as string,
+          },
+        ],
+      };
 
-    this.history[sessionId].push(message);
+      this.history[sessionId].push(message);
 
-    const assistantRes = await this.client.messages.create({
-      model: 'anthropic.claude-3-haiku-20240307-v1:0',
-      max_tokens: MAX_TOKENS,
+      const assistantRes = await this.client.messages.create({
+        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        max_tokens: MAX_TOKENS,
 
-      messages: [...(this.history[sessionId] as any)],
-    });
-    this.history[sessionId].push({
-      role: assistantRes.role,
-      content: assistantRes.content,
-    } as MessageType);
+        messages: [...(this.history[sessionId] as any)],
+      });
+      this.history[sessionId].push({
+        role: assistantRes.role,
+        content: assistantRes.content,
+      } as MessageType);
 
-    return JSON.parse(assistantRes.content[0]['text']);
+      return JSON.parse(assistantRes.content[0]['text']);
+    } catch (err) {
+      console.log('error in result: ', err);
+      return {
+        success: false,
+        error: String(err),
+      };
+    }
   }
 
   async _compressImage(imageBuffer: Buffer): Promise<Buffer> {
