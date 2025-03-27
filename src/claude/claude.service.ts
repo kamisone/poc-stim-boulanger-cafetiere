@@ -152,7 +152,7 @@ export class ClaudeService {
       throw new BadRequestException('sessionId value not found.');
     }
     try {
-      const prompt = `Now that you’ve recognized the product the user reported as not working, give me five basic verifications to check, in this JSON format (only this format, no other details): {"verifications": []}.`;
+      const prompt = `Now that you’ve recognized the product the user reported as not working, give me five basic verifications to check in french, in this JSON format (only this format, no other details): {"verifications": []}.`;
       const message: MessageType = {
         role: 'user',
         content: [
@@ -193,7 +193,7 @@ export class ClaudeService {
     }
 
     try {
-      const prompt = `The user has completed all your basic verifications. Now, provide 5 symptoms they will confirm, in this JSON format (only this format, no other details): {"symptoms": []}.`;
+      const prompt = `The user has completed all your basic verifications. Now, provide 5 symptoms in french they will confirm, in this JSON format (only this format, no other details): {"symptoms": []}.`;
       const message: MessageType = {
         role: 'user',
         content: [
