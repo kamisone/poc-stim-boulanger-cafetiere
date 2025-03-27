@@ -1,10 +1,10 @@
 import {
-    BadRequestException,
-    Body,
-    Controller,
-    Post,
-    UploadedFile,
-    UseInterceptors
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from 'multer';
@@ -34,7 +34,6 @@ export class ClaudeController {
     };
   }
 
-
   @Post('troubleshooting')
   async troubleshooting(
     @Body() body: { response: string[]; sessionId?: string },
@@ -42,13 +41,10 @@ export class ClaudeController {
     if (!body.sessionId) {
       throw new BadRequestException('sessionId is needed.');
     }
-    // const assistantRes = await this.ClaudeService.command(
-    //   body.sessionId,
-    //   'text',
-    //   body.response.join(' - '),
-    // );
 
-    const assistantRes = await this.ClaudeService.basicVerification(body.sessionId);
+    const assistantRes = await this.ClaudeService.basicVerification(
+      body.sessionId,
+    );
 
     return {
       success: true,
@@ -57,13 +53,30 @@ export class ClaudeController {
   }
 
   @Post('symptoms')
-  async symptoms() {
-    
+  async symptoms(@Body() body: { sessionId: string }) {
+    if (!body.sessionId) {
+      throw new BadRequestException('sessionId is needed.');
+    }
+
+    const assistantRes = await this.ClaudeService.symptoms(body.sessionId);
+
+    return {
+      success: true,
+      data: JSON.parse(assistantRes.content[0]['text']),
+    };
   }
 
-
   @Post('result')
-  async result() {
+  async result(@Body() body: { sessionId: string, symptoms: string[] }) {
+    if (!body.sessionId) {
+      throw new BadRequestException('sessionId is needed.');
+    }
 
+    const assistantRes = await this.ClaudeService.result(body.sessionId, body.symptoms);
+
+    return {
+      success: true,
+      data: JSON.parse(assistantRes.content[0]['text']),
+    };
   }
 }

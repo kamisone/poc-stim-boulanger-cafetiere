@@ -410,7 +410,74 @@ export class ClaudeService {
       role: assistantRes.role,
       content: assistantRes.content,
     } as MessageType);
-    return assistantRes;
+
+    return JSON.parse(assistantRes.content[0]['text']);
+  }
+
+  async symptoms(sessionId: string) {
+    if (!this.history || !this.history[sessionId]) {
+      throw new BadRequestException('sessionId value not found.');
+    }
+
+    const prompt = `The user has completed all your basic verifications. Now, provide 5 symptoms they will confirm, in this JSON format (only this format, no other details): {"symptoms": []}.`;
+    const message: MessageType = {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: prompt as string,
+        },
+      ],
+    };
+
+    this.history[sessionId].push(message);
+
+    const assistantRes = await this.client.messages.create({
+      model: 'anthropic.claude-3-haiku-20240307-v1:0',
+      max_tokens: MAX_TOKENS,
+
+      messages: [...(this.history[sessionId] as any)],
+    });
+    this.history[sessionId].push({
+      role: assistantRes.role,
+      content: assistantRes.content,
+    } as MessageType);
+
+    return JSON.parse(assistantRes.content[0]['text']);
+  }
+
+  async result(sessionId: string, symptoms: string[]) {
+    if (!this.history || !this.history[sessionId]) {
+      throw new BadRequestException('sessionId value not found.');
+    }
+
+    const prompt = `Here are the symptoms that the user confirmed: 
+        ${symptoms.join(', ')} .
+        Now, provide the final result in this JSON format, without any other details: {"result": ""}.`;
+    const message: MessageType = {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: prompt as string,
+        },
+      ],
+    };
+
+    this.history[sessionId].push(message);
+
+    const assistantRes = await this.client.messages.create({
+      model: 'anthropic.claude-3-haiku-20240307-v1:0',
+      max_tokens: MAX_TOKENS,
+
+      messages: [...(this.history[sessionId] as any)],
+    });
+    this.history[sessionId].push({
+      role: assistantRes.role,
+      content: assistantRes.content,
+    } as MessageType);
+
+    return JSON.parse(assistantRes.content[0]['text']);
   }
 
   async _compressImage(imageBuffer: Buffer): Promise<Buffer> {
