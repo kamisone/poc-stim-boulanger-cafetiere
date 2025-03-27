@@ -353,7 +353,7 @@ export class ClaudeService {
                 "imageUrl": "The product image url from descriptive tags list"
             }
 
-            Only this format, no other details.
+            Only one this format, no other details.
             `,
           },
         ],
@@ -378,8 +378,12 @@ export class ClaudeService {
       } as MessageType);
 
       return JSON.parse(assistantRes.content[0]['text']);
-    } catch (_) {
-      console.log('error in recognizeProduct: ', _);
+    } catch (err) {
+      console.log('error in recognizeProduct: ', err);
+      return {
+        success: false,
+        error: String(err),
+      };
     }
   }
 
