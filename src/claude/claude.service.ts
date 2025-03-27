@@ -147,6 +147,8 @@ export class ClaudeService {
     }
   }
 
+
+  // /Troubleshooting
   async basicVerification(sessionId: string) {
     if (!this.history || !this.history[sessionId]) {
       throw new BadRequestException('sessionId value not found.');
@@ -187,6 +189,8 @@ export class ClaudeService {
     }
   }
 
+
+  // /symptoms
   async symptoms(sessionId: string) {
     if (!this.history || !this.history[sessionId]) {
       throw new BadRequestException('sessionId value not found.');
@@ -228,6 +232,8 @@ export class ClaudeService {
     }
   }
 
+
+  // /result
   async result(sessionId: string, symptoms: string[]) {
     if (!this.history || !this.history[sessionId]) {
       throw new BadRequestException('sessionId value not found.');
