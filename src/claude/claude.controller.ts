@@ -27,6 +27,13 @@ export class ClaudeController {
       file.mimetype,
       sessionId,
     );
+
+    if (recognizedProduct.success === false) {
+      return {
+        success: false,
+        error: recognizedProduct.error,
+      };
+    }
     return {
       success: true,
       data: recognizedProduct,
@@ -46,6 +53,13 @@ export class ClaudeController {
       body.sessionId,
     );
 
+    if (assistantRes.success === false) {
+      return {
+        success: false,
+        error: assistantRes.error,
+      };
+    }
+
     return {
       success: true,
       data: assistantRes,
@@ -60,6 +74,13 @@ export class ClaudeController {
 
     const assistantRes = await this.ClaudeService.symptoms(body.sessionId);
 
+    if (assistantRes.success === false) {
+      return {
+        success: false,
+        error: assistantRes.error,
+      };
+    }
+
     return {
       success: true,
       data: assistantRes,
@@ -67,12 +88,22 @@ export class ClaudeController {
   }
 
   @Post('result')
-  async result(@Body() body: { sessionId: string, symptoms: string[] }) {
+  async result(@Body() body: { sessionId: string; symptoms: string[] }) {
     if (!body.sessionId) {
       throw new BadRequestException('sessionId is needed.');
     }
 
-    const assistantRes = await this.ClaudeService.result(body.sessionId, body.symptoms);
+    const assistantRes = await this.ClaudeService.result(
+      body.sessionId,
+      body.symptoms,
+    );
+
+    if (assistantRes.success === false) {
+      return {
+        success: false,
+        error: assistantRes.error,
+      };
+    }
 
     return {
       success: true,
