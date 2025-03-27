@@ -23,7 +23,7 @@ export interface MessageType {
   }[];
 }
 
-const BEDROCK_MODEL = 'anthropic.claude-3-7-sonnet-20250219-v1:0';
+const BEDROCK_MODEL = 'anthropic.claude-3-haiku-20240307-v1:0';
 const MAX_TOKENS = 500;
 
 export class ClaudeService {
@@ -126,7 +126,7 @@ export class ClaudeService {
       this.history[sessionId].push(message);
 
       const assistantRes = await this.client.messages.create({
-        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        model: BEDROCK_MODEL,
         max_tokens: MAX_TOKENS,
         messages: this.history[sessionId] as any,
       });
@@ -166,7 +166,7 @@ export class ClaudeService {
       this.history[sessionId].push(message);
 
       const assistantRes = await this.client.messages.create({
-        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        model: BEDROCK_MODEL,
         max_tokens: MAX_TOKENS,
 
         messages: [...(this.history[sessionId] as any)],
@@ -207,7 +207,7 @@ export class ClaudeService {
       this.history[sessionId].push(message);
 
       const assistantRes = await this.client.messages.create({
-        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        model: BEDROCK_MODEL,
         max_tokens: MAX_TOKENS,
 
         messages: [...(this.history[sessionId] as any)],
@@ -255,7 +255,7 @@ export class ClaudeService {
       this.history[sessionId].push(message);
 
       const assistantRes = await this.client.messages.create({
-        model: 'anthropic.claude-3-haiku-20240307-v1:0',
+        model: BEDROCK_MODEL,
         max_tokens: MAX_TOKENS,
 
         messages: [...(this.history[sessionId] as any)],
