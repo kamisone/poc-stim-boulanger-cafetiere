@@ -176,9 +176,9 @@ export class ClaudeService {
         content: assistantRes.content,
       } as MessageType);
 
-
       return JSON.parse(assistantRes.content[0]['text']);
     } catch (err) {
+      this.history[sessionId].pop(); // Take out the last user message
       console.log('error in basicVerification: ', err);
       return {
         success: false,
@@ -219,6 +219,7 @@ export class ClaudeService {
 
       return JSON.parse(assistantRes.content[0]['text']);
     } catch (err) {
+      this.history[sessionId].pop(); // Take out the last user message
       console.log('error in symptoms: ', err);
       return {
         success: false,
@@ -266,6 +267,7 @@ export class ClaudeService {
 
       return JSON.parse(assistantRes.content[0]['text']);
     } catch (err) {
+      this.history[sessionId].pop(); // Take out the last user message
       console.log('error in result: ', err);
       return {
         success: false,
